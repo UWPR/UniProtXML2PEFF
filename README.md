@@ -68,7 +68,7 @@ The tool requires an input UniProt XML file and an output PEFF file path.
 
 ### Example
 ```bash
-./UniProtXML2PEFF.exe small.xml small.peff
+./UniProtXML2PEFF.exe test.xml test.peff
 ```
 
 ---
@@ -149,7 +149,6 @@ The generated PEFF files include:
 # VariantSimple=true
 # VariantComplex=true
 # ModResUnimod=true
-
 >tr|TEST123| \VariantSimple=(15|A|V) \VariantComplex=(20|22|) \ModResUnimod=(10|UNIMOD:21)
 AAAAAGGGGG
 ```

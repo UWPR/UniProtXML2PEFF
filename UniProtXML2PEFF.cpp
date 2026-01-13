@@ -272,22 +272,17 @@ vector<string> parse_complex_variants(XMLElement* entry)
    {
       string feat_type = safe_string(feat->Attribute("type"));
 
-//      cerr << "Processing feature type: " << feat_type << endl;
-
       if (feat_type != "sequence variant" && feat_type != "splice variant" && feat_type != "mutagenesis site")
       {
-//         cerr << "Skipped feature type: " << feat_type << endl;
          continue;
       }
 
       const char* desc = feat->Attribute("description");
-//      cerr << "Feature description: " << safe_string(desc) << endl;
 
       auto* locElem = feat->FirstChildElement("location");
 
       if (!locElem)
       {
-//         cerr << "Skipped due to missing location for feature type: " << feat_type << endl;
          VARIANT_SKIPPED["complex_location"]++;
          continue;
       }
@@ -298,11 +293,8 @@ vector<string> parse_complex_variants(XMLElement* entry)
       const char* origText = origElem ? origElem->GetText() : nullptr;
       const char* varText = varElem ? varElem->GetText() : nullptr;
 
-//      cerr << "Original: " << safe_string(origText) << ", Variation: " << safe_string(varText) << endl;
-
       if (!origText || !varText)
       {
-//         cerr << "Skipped due to missing original or variation: " << safe_string(desc) << endl;
          VARIANT_SKIPPED["non_simple"]++;
          continue;
       }
@@ -330,12 +322,9 @@ vector<string> parse_complex_variants(XMLElement* entry)
       }
       else
       {
-//         cerr << "Skipped due to unhandled location for feature type: " << feat_type << endl;
          VARIANT_SKIPPED["complex_location"]++;
          continue;
       }
-
-//      cerr << "Processed location: start=" << start_pos << ", end=" << end_pos << endl;
 
       // Determine if this should be VariantSimple
       if (safe_string(origText).length() == 1 && safe_string(varText).length() == 1 &&
@@ -344,14 +333,12 @@ vector<string> parse_complex_variants(XMLElement* entry)
       {
          string simple_entry = "(" + to_string(start_pos) + "|" + safe_string(origText) + "|" + safe_string(varText) + ")";
          simple_vars.push_back(simple_entry);
-//         cerr << "Built VariantSimple entry: " << simple_entry << endl;
          continue; // Skip processing as VariantComplex
       }
 
       // If not simple, classify as VariantComplex
       string complex_entry = "(" + to_string(start_pos) + "|" + to_string(end_pos) + "|" + safe_string(varText) + ")";
       complex_vars.push_back(complex_entry);
-//      cerr << "Built VariantComplex entry: " << complex_entry << endl;
 
       if (feat_type == "mutagenesis site")
       {

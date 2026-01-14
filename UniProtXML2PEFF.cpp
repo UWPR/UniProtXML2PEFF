@@ -248,7 +248,7 @@ vector<string> parse_variants(XMLElement* entry)
       }
 
       int pos = posElem->IntAttribute("position");
-      variants.push_back("(" + to_string(pos) + "|" + alt + "|" + ref + ")");
+      variants.push_back("(" + to_string(pos) + "|" + ref + "|" + alt + ")");
    }
 
    return variants;
@@ -363,11 +363,46 @@ int main(int argc, char* argv[])
 {
    if (argc < 3)
    {
-      cerr << "Usage: " << argv[0] << " input.xml output.peff [--strict]\n";
+      cerr << "Usage: " << argv[0] << " input.xml output.peff [options]\n";
+      cerr << "Options:\n";
+      cerr << "  --strict              Exit on unmapped PTMs (default: skip)\n";
+      cerr << "  --no-ptms             Disable PTM processing (default: enabled)\n";
+      cerr << "  --variant-simple      Enable VariantSimple processing (default: disabled)\n";
+      cerr << "  --variant-complex     Enable VariantComplex processing (default: disabled)\n";
       return 1;
    }
 
-   bool strict = (argc == 4 && string(argv[3]) == "--strict");
+   // Parse command-line options
+   bool strict = false;
+   bool enable_ptms = true;
+   bool enable_variant_simple = false;
+   bool enable_variant_complex = false;
+
+   for (int i = 3; i < argc; i++)
+   {
+      string arg(argv[i]);
+      if (arg == "--strict")
+      {
+         strict = true;
+      }
+      else if (arg == "--no-ptms")
+      {
+         enable_ptms = false;
+      }
+      else if (arg == "--variant-simple")
+      {
+         enable_variant_simple = true;
+      }
+      else if (arg == "--variant-complex")
+      {
+         enable_variant_complex = true;
+      }
+      else
+      {
+         cerr << "Unknown option: " << arg << endl;
+         return 1;
+      }
+   }
 
    XMLDocument doc;
    if (doc.LoadFile(argv[1]) != XML_SUCCESS)
@@ -385,8 +420,9 @@ int main(int argc, char* argv[])
 
    peff << "# PEFF 1.0\n";
    peff << "# Database=UniProt\n";
-   peff << "# VariantSimple=true\n";
-   peff << "# VariantComplex=true\n# ModResUnimod=true\n";
+   peff << "# VariantSimple=" << (enable_variant_simple || enable_variant_complex ? "true" : "false") << "\n";
+   peff << "# VariantComplex=" << (enable_variant_complex ? "true" : "false") << "\n";
+   peff << "# ModResUnimod=" << (enable_ptms ? "true" : "false") << "\n";
 
    XMLElement* root = doc.RootElement();
    if (!root)
@@ -433,9 +469,28 @@ int main(int argc, char* argv[])
       string entry_name = safe_string(entry->FirstChildElement("name") ? entry->FirstChildElement("name")->GetText() : "");
       string organism = safe_string(entry->FirstChildElement("organism") ? entry->FirstChildElement("organism")->GetText() : "");
 
-      auto mods = parse_modres(entry, strict);
-      auto vars = parse_variants(entry);
-      auto complex_vars = parse_complex_variants(entry);
+      // Clear OUTPUT_SIMPLE for this entry
+      OUTPUT_SIMPLE.clear();
+
+      // Parse features based on enabled options
+      vector<pair<int, string>> mods;
+      vector<string> vars;
+      vector<string> complex_vars;
+
+      if (enable_ptms)
+      {
+         mods = parse_modres(entry, strict);
+      }
+
+      if (enable_variant_simple)
+      {
+         vars = parse_variants(entry);
+      }
+
+      if (enable_variant_complex)
+      {
+         complex_vars = parse_complex_variants(entry);
+      }
 
       peff << ">" << db_type << "|" << acc << "|" << entry_name;
       if (!organism.empty())
@@ -443,13 +498,25 @@ int main(int argc, char* argv[])
          peff << " OS=" << organism;
       }
 
-      // Write VariantSimple (Fix Here)
-      if (!OUTPUT_SIMPLE.empty())
+      // Write VariantSimple
+      // When VariantComplex is enabled, prefer OUTPUT_SIMPLE from parse_complex_variants (for compatibility)
+      // Otherwise, use vars from parse_variants if VariantSimple is enabled
+      vector<string> simple_output;
+      if (enable_variant_complex && !OUTPUT_SIMPLE.empty())
+      {
+         simple_output = OUTPUT_SIMPLE;
+      }
+      else if (enable_variant_simple)
+      {
+         simple_output = vars;
+      }
+      
+      if (!simple_output.empty())
       {
          peff << " \\VariantSimple=";
-         for (size_t i = 0; i < OUTPUT_SIMPLE.size(); ++i)
+         for (size_t i = 0; i < simple_output.size(); ++i)
          {
-            peff << OUTPUT_SIMPLE[i];
+            peff << simple_output[i];
          }
       }
 

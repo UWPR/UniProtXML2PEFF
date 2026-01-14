@@ -542,7 +542,10 @@ int main(int argc, char* argv[])
       peff << "\n";
       if (!seq.empty() && seq != "UNKNOWN_SEQUENCE")
       {
-         peff << seq << "\n";
+         int iSequenceBreakLength = 60;
+
+         for (size_t i = 0; i < seq.length(); i += iSequenceBreakLength)
+            peff << seq.substr(i, iSequenceBreakLength) << "\n";
       }
 
       entries_processed++;

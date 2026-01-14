@@ -13,96 +13,96 @@ using namespace tinyxml2;
 using namespace std;
 
 /* -------------------------------
-   Unimod mapping
+   PSI-MOD mapping
 -------------------------------- */
-std::map<std::string, std::string> UNIMOD_MAP = {
+std::map<std::string, std::string> PSI_MAP = {
 
    /* =========================
       Phosphorylation
       ========================= */
-   {"Phosphoserine",        "UNIMOD:21"},
-   {"Phosphothreonine",     "UNIMOD:21"},
-   {"Phosphotyrosine",      "UNIMOD:21"},
+   {"Phosphoserine",        "MOD:00046"},
+   {"Phosphothreonine",     "MOD:00047"},
+   {"Phosphotyrosine",      "MOD:00048"},
 
    /* =========================
       Acetylation / Acylation
       ========================= */
-   {"Acetylation",         "UNIMOD:1"},
-   {"N-acetylation",       "UNIMOD:1"},
-   {"N-acetylserine",      "UNIMOD:1"},
-   {"N-acetylalanine",     "UNIMOD:1"},
-   {"N-acetylmethionine",  "UNIMOD:1"},
-   {"N-acetylglycine",     "UNIMOD:1"},
-   {"N-acetylproline",     "UNIMOD:1"},
-   {"N-acetylthreonine",   "UNIMOD:1"},
-   {"N6-acetyllysine",     "UNIMOD:1"},
-   {"Propionylation",      "UNIMOD:58"},
-   {"Butyrylation",        "UNIMOD:128"},
-   {"Crotonylation",       "UNIMOD:136"},
-   {"Succinylation",       "UNIMOD:64"},
-   {"Malonylation",        "UNIMOD:747"},
-   {"Glutarylation",       "UNIMOD:121"},
+   {"Acetylation",         "MOD:00394"},
+   {"N-acetylation",       "MOD:00394"},
+   {"N-acetylserine",      "MOD:00062"},
+   {"N-acetylalanine",     "MOD:00061"},
+   {"N-acetylmethionine",  "MOD:00060"},
+   {"N-acetylglycine",     "MOD:01234"},
+   {"N-acetylproline",     "MOD:01235"},
+   {"N-acetylthreonine",   "MOD:01236"},
+   {"N6-acetyllysine",     "MOD:00064"},
+   {"Propionylation",      "MOD:00233"},
+   {"Butyrylation",        "MOD:00336"},
+   {"Crotonylation",       "MOD:00335"},
+   {"Succinylation",       "MOD:00340"},
+   {"Malonylation",        "MOD:00339"},
+   {"Glutarylation",       "MOD:00338"},
 
    /* =========================
       Methylation
       ========================= */
-   {"Methylation",          "UNIMOD:34"},
-   {"Dimethylation",        "UNIMOD:36"},
-   {"Trimethylation",       "UNIMOD:37"},
+   {"Methylation",          "MOD:00427"},
+   {"Dimethylation",        "MOD:00429"},
+   {"Trimethylation",       "MOD:00430"},
 
    /* =========================
       Hydroxylation
       ========================= */
-   {"Hydroxylation",        "UNIMOD:35"},
-   {"4-hydroxyproline",     "UNIMOD:35"},
-   {"5-hydroxylysine",      "UNIMOD:35"},
+   {"Methylation",          "MOD:00427"},
+   {"Dimethylation",        "MOD:00429"},
+   {"Trimethylation",       "MOD:00430"},
 
    /* =========================
       Glycosylation (generic)
       ========================= */
-   {"N-linked glycosylation", "UNIMOD:43"},
-   {"O-linked glycosylation", "UNIMOD:43"},
-   {"Glycosylation",          "UNIMOD:43"},
-   {"HexNAc",                 "UNIMOD:43"},
+   {"N-linked glycosylation", "MOD:00641"},
+   {"O-linked glycosylation", "MOD:00645"},
+   {"Glycosylation",          "MOD:00663"},
+   {"HexNAc",                 "MOD:00651"},
 
    /* =========================
       Lipidation
       ========================= */
-   {"Myristoylation",       "UNIMOD:211"},
-   {"Palmitoylation",       "UNIMOD:214"},
-   {"Prenylation",          "UNIMOD:235"},
-   {"Farnesylation",        "UNIMOD:134"},
-   {"Geranylgeranylation",  "UNIMOD:206"},
+   {"Myristoylation",       "MOD:00124"},
+   {"Palmitoylation",       "MOD:00122"},
+   {"Prenylation",          "MOD:00136"},
+   {"Farnesylation",        "MOD:00139"},
+   {"Geranylgeranylation",  "MOD:00138"},
 
    /* =========================
       Sulfation / Nitrosylation
       ========================= */
-   {"Sulfation",            "UNIMOD:40"},
-   {"Nitrosylation",        "UNIMOD:36"},
+   {"Sulfation",            "MOD:00125"},
+   {"Nitrosylation",        "MOD:00126"},
 
    /* =========================
       Ubiquitin-like modifiers
       ========================= */
-   {"Ubiquitination",       "UNIMOD:121"},
-   {"Sumoylation",          "UNIMOD:314"},
-   {"NEDDylation",          "UNIMOD:384"},
+   {"Ubiquitination",       "MOD:01148"},
+   {"Sumoylation",          "MOD:01946"},
+   {"NEDDylation",          "MOD:02132"},
 
    /* =========================
       ADP-ribosylation
       ========================= */
-   {"ADP-ribosylation",     "UNIMOD:384"},
+   {"ADP-ribosylation",     "MOD:00460"},
 
    /* =========================
       Terminal modifications
       ========================= */
-   {"Amidation",            "UNIMOD:2"},
-   {"Formylation",          "UNIMOD:122"},
+   {"Amidation",            "MOD:00687"},
+   {"Formylation",          "MOD:00440"},
 
    /* =========================
       Redox / cysteine biology
       ========================= */
-   {"Disulfide bond",       "UNIMOD:7"},
-   {"Glutathionylation",    "UNIMOD:55"}
+   {"Disulfide bond",       "MOD:00494"},
+   {"Glutathionylation",    "MOD:00495"}
 };
 
 /* ============================================================ */
@@ -152,8 +152,8 @@ vector<pair<int, string>> parse_modres(XMLElement* entry, bool strict)
       string d(desc);
       PTM_COUNTS[d]++;
 
-      auto it = UNIMOD_MAP.find(d);
-      if (it == UNIMOD_MAP.end())
+      auto it = PSI_MAP.find(d);
+      if (it == PSI_MAP.end())
       {
          if (strict)
          {
@@ -248,7 +248,7 @@ vector<string> parse_variants(XMLElement* entry)
       }
 
       int pos = posElem->IntAttribute("position");
-      variants.push_back("(" + to_string(pos) + "|" + ref + "|" + alt + ")");
+      variants.push_back("(" + to_string(pos) + "|" + alt + ")");
    }
 
    return variants;
@@ -331,7 +331,7 @@ vector<string> parse_complex_variants(XMLElement* entry)
          is_valid_aa(origText[0]) && is_valid_aa(varText[0]) &&
          start_pos == end_pos)
       {
-         string simple_entry = "(" + to_string(start_pos) + "|" + safe_string(origText) + "|" + safe_string(varText) + ")";
+         string simple_entry = "(" + to_string(start_pos) + "|" + safe_string(varText) + ")";
          simple_vars.push_back(simple_entry);
          continue; // Skip processing as VariantComplex
       }
@@ -418,11 +418,10 @@ int main(int argc, char* argv[])
       return 1;
    }
 
-   peff << "# PEFF 1.0\n";
-   peff << "# Database=UniProt\n";
+   peff << "# PEFF 1.0 generated by https://github.com/UWPR/UniProtXML2PEFF\n";
    peff << "# VariantSimple=" << (enable_variant_simple || enable_variant_complex ? "true" : "false") << "\n";
    peff << "# VariantComplex=" << (enable_variant_complex ? "true" : "false") << "\n";
-   peff << "# ModResUnimod=" << (enable_ptms ? "true" : "false") << "\n";
+   peff << "# ModResPsi=" << (enable_ptms ? "true" : "false") << "\n";
 
    XMLElement* root = doc.RootElement();
    if (!root)
@@ -510,7 +509,7 @@ int main(int argc, char* argv[])
       {
          simple_output = vars;
       }
-      
+
       if (!simple_output.empty())
       {
          peff << " \\VariantSimple=";
@@ -532,7 +531,7 @@ int main(int argc, char* argv[])
 
       if (!mods.empty())
       {
-         peff << " \\ModResUnimod=";
+         peff << " \\ModResPsi=";
          for (size_t i = 0; i < mods.size(); i++)
          {
             peff << "(" << mods[i].first << "|" << mods[i].second << ")";

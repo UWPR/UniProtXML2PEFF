@@ -4,3 +4,5 @@ UniProtXML2PEFF.exe
 # Test output files
 *.peff
 !test.peff
+
+_codeql_detected_source_root

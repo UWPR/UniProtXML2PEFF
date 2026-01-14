@@ -18,7 +18,7 @@ PEFF files directly retrieved from UniProt via their API (e.g., `curl -s "https:
 
 UniProtXML2PEFF provides an alternative mechanism for generating PEFF files by:
 - Extracting specific sequence variant annotations directly from UniProt XML.
-- Mapping modifications (e.g., phosphorylations, methylations) to **[PSI-mod identifiers](https://github.com/HUPO-PSI/psi-mod-CV)** for encoding in `\ModResPsi`.
+- Mapping modifications (e.g., phosphorylations, methylations) to **[PSI-MOD identifiers](https://github.com/HUPO-PSI/psi-mod-CV)** for encoding in `\ModResPsi`.
 - Skipping or reporting entries that lack sufficient information for proper PEFF annotations.
 
 ---

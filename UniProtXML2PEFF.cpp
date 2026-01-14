@@ -20,89 +20,82 @@ std::map<std::string, std::string> PSI_MAP = {
    /* =========================
       Phosphorylation
       ========================= */
-   {"Phosphoserine",        "MOD:00046"},
-   {"Phosphothreonine",     "MOD:00047"},
-   {"Phosphotyrosine",      "MOD:00048"},
+   {"Phosphoserine",           "MOD:00046"},
+   {"Phosphothreonine",        "MOD:00047"},
+   {"Phosphotyrosine",         "MOD:00048"},
 
    /* =========================
-      Acetylation / Acylation
+      Acetylation / formylation
       ========================= */
-   {"Acetylation",         "MOD:00394"},
-   {"N-acetylation",       "MOD:00394"},
-   {"N-acetylserine",      "MOD:00062"},
-   {"N-acetylalanine",     "MOD:00061"},
-   {"N-acetylmethionine",  "MOD:00060"},
-   {"N-acetylglycine",     "MOD:01234"},
-   {"N-acetylproline",     "MOD:01235"},
-   {"N-acetylthreonine",   "MOD:01236"},
-   {"N6-acetyllysine",     "MOD:00064"},
-   {"Propionylation",      "MOD:00233"},
-   {"Butyrylation",        "MOD:00336"},
-   {"Crotonylation",       "MOD:00335"},
-   {"Succinylation",       "MOD:00340"},
-   {"Malonylation",        "MOD:00339"},
-   {"Glutarylation",       "MOD:00338"},
+   {"N-acetylalanine",         "MOD:00394"},
+   {"N-acetylaspartate",       "MOD:00394"},
+   {"N-acetylcysteine",        "MOD:00394"},
+   {"N-acetylglutamate",       "MOD:00394"},
+   {"N-acetylglycine",         "MOD:00394"},
+   {"N-acetylmethionine",      "MOD:00394"},
+   {"N-acetylproline",         "MOD:00394"},
+   {"N-acetylserine",          "MOD:00394"},
+   {"N-acetylthreonine",       "MOD:00394"},
+   {"N-acetyltyrosine",        "MOD:00394"},
+   {"N-formylmethionine",      "MOD:00160"},
 
    /* =========================
       Methylation
       ========================= */
-   {"Methylation",          "MOD:00427"},
-   {"Dimethylation",        "MOD:00429"},
-   {"Trimethylation",       "MOD:00430"},
+   {"Dimethylated arginine",           "MOD:00638"},
+   {"Asymmetric dimethylarginine",     "MOD:00077"},
+   {"Asymmetric dimethylarginine; by PRMT1", "MOD:00077"},
+   {"Symmetric dimethylarginine",      "MOD:00076"},
+   {"Trimethyllysine",                 "MOD:00083"},
+   {"Lysine methyl ester",             "MOD:00323"},
+   {"Leucine methyl ester",            "MOD:00304"},
+   {"Aspartate methyl ester",          "MOD:00407"},
+   {"Cysteine methyl ester",           "MOD:00114"},
+   {"Glutamate methyl ester (Gln)",    "MOD:00407"},
 
    /* =========================
-      Hydroxylation
+      Oxidation / hydroxylation
       ========================= */
-   {"Methylation",          "MOD:00427"},
-   {"Dimethylation",        "MOD:00429"},
-   {"Trimethylation",       "MOD:00430"},
+   {"Methionine sulfoxide",            "MOD:00719"},
+   {"Methionine sulfone",              "MOD:00256"},
+   {"3-hydroxyproline",                "MOD:00038"},
+   {"4-hydroxyproline",                "MOD:00039"},
+   {"3,4-dihydroxyproline",            "MOD:00287"},
+   {"4-hydroxylysine",                 "MOD:00240"},
+   {"3-hydroxyphenylalanine",          "MOD:01385"},
+   {"3-hydroxytryptophan",             "MOD:00327"},
+   {"3-hydroxytryptophan; by autocatalysis",   "MOD:00327"},
+   {"3,4-dihydroxyarginine",           "MOD:00374"},
+   {"4-hydroxyarginine",               "MOD:00220"},
 
    /* =========================
-      Glycosylation (generic)
-      ========================= */
-   {"N-linked glycosylation", "MOD:00641"},
-   {"O-linked glycosylation", "MOD:00645"},
-   {"Glycosylation",          "MOD:00663"},
-   {"HexNAc",                 "MOD:00651"},
+      Deamidation
+   ========================= */
+   {"Deamidated asparagine",   "MOD:00684"},
+   {"Deamidated glutamine",    "MOD:00685"},
+   {"Citrulline",              "MOD:00219"},
 
    /* =========================
       Lipidation
       ========================= */
-   {"Myristoylation",       "MOD:00124"},
-   {"Palmitoylation",       "MOD:00122"},
-   {"Prenylation",          "MOD:00136"},
-   {"Farnesylation",        "MOD:00139"},
-   {"Geranylgeranylation",  "MOD:00138"},
+   {"Myristoylation",          "MOD:00438"},
+   {"Farnesylation",           "MOD:00437"},
+   {"Geranylgeranylation",     "MOD:00441"},
 
    /* =========================
-      Sulfation / Nitrosylation
+      Sulfation
       ========================= */
-   {"Sulfation",            "MOD:00125"},
-   {"Nitrosylation",        "MOD:00126"},
-
-   /* =========================
-      Ubiquitin-like modifiers
-      ========================= */
-   {"Ubiquitination",       "MOD:01148"},
-   {"Sumoylation",          "MOD:01946"},
-   {"NEDDylation",          "MOD:02132"},
+   {"Sulfocysteine",           "MOD:00180"},
+   {"Sulfothreonine",          "MOD:00180"},
+   {"Sulfotyrosine",           "MOD:00367"},
 
    /* =========================
       ADP-ribosylation
       ========================= */
-   {"ADP-ribosylation",     "MOD:00460"},
-
-   /* =========================
-      Terminal modifications
-      ========================= */
-   {"Amidation",            "MOD:00687"},
-   {"Formylation",          "MOD:00440"},
-
-   /* =========================
-      Redox / cysteine biology
-      ========================= */
-   {"Disulfide bond",       "MOD:00494"},
-   {"Glutathionylation",    "MOD:00495"}
+   {"ADP-ribosylarginine",     "MOD:00177"},
+   {"ADP-ribosylcysteine",     "MOD:00178"},
+   {"ADP-ribosylserine",       "MOD:00242"},
+   {"ADP-ribosylarginine",     "MOD:00177"}
 };
 
 /* ============================================================ */
@@ -169,7 +162,7 @@ vector<pair<int, string>> parse_modres(XMLElement* entry, bool strict)
 }
 
 /* ============================================================
-   Parse VariantSimple (Comet-safe)
+   Parse VariantSimple
    ============================================================ */
 vector<string> parse_variants(XMLElement* entry)
 {

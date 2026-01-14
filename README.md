@@ -27,10 +27,11 @@ UniProtXML2PEFF addresses these issues by:
 
 - Converts UniProt XML files to PEFF.
 - Processes:
-  - **Simple substitutions (e.g., A → V)** into `\VariantSimple`.
-  - **Complex variants** such as deletions, insertions, and multi-residue substitutions into `\VariantComplex`.
-  - **Post-translational modifications (PTMs)** such as phosphorylations and acetylations are encoded into `\ModResUnimod` with Unimod identifiers.
+  - **Post-translational modifications (PTMs)** such as phosphorylations and acetylations are encoded into `\ModResUnimod` with Unimod identifiers. **Enabled by default**.
+  - **Simple substitutions (e.g., A → V)** into `\VariantSimple`. **Disabled by default**; use `--variant-simple` to enable.
+  - **Complex variants** such as deletions, insertions, and multi-residue substitutions into `\VariantComplex`. **Disabled by default**; use `--variant-complex` to enable.
 - Logs skipped or unsupported variants and modifications for audit and troubleshooting.
+- Provides flexible command-line options to control which features are processed.
 
 ---
 
@@ -59,16 +60,52 @@ The tool requires an input UniProt XML file and an output PEFF file path.
 
 ### Command Syntax
 ```
-./UniProtXML2PEFF.exe <input.xml> <output.peff> [--strict]
+./UniProtXML2PEFF.exe <input.xml> <output.peff> [options]
 ```
 
 - **`<input.xml>`**: The path to the input UniProt XML file.
 - **`<output.peff>`**: The desired path for the PEFF output file.
-- **`--strict`** (optional): Enforces strict handling of annotations. If unsupported variants or modifications are encountered, the program will exit with an error.
 
-### Example
+### Options
+
+- **`--strict`** (optional): Enforces strict handling of annotations. If unsupported variants or modifications are encountered, the program will exit with an error.
+- **`--no-ptms`** (optional): Disables PTM (post-translational modification) processing. By default, PTMs are enabled and encoded in `\ModResUnimod`.
+- **`--variant-simple`** (optional): Enables VariantSimple processing. By default, VariantSimple is disabled. When enabled, simple single-residue substitutions are encoded in `\VariantSimple`.
+- **`--variant-complex`** (optional): Enables VariantComplex processing. By default, VariantComplex is disabled. When enabled, complex variants such as deletions, insertions, and multi-residue substitutions are encoded in `\VariantComplex`.
+
+### Default Behavior
+
+By default, **only PTMs are processed**. If you want to include variant information, you must explicitly enable it using the appropriate command-line options.
+
+- **PTMs (ModResUnimod)**: **Enabled by default**. Use `--no-ptms` to disable.
+- **VariantSimple**: **Disabled by default**. Use `--variant-simple` to enable.
+- **VariantComplex**: **Disabled by default**. Use `--variant-complex` to enable.
+
+### Examples
+
+#### Process PTMs only (default behavior)
 ```bash
 ./UniProtXML2PEFF.exe test.xml test.peff
+```
+
+#### Process all features (PTMs, VariantSimple, and VariantComplex)
+```bash
+./UniProtXML2PEFF.exe test.xml test.peff --variant-simple --variant-complex
+```
+
+#### Process only variants (disable PTMs, enable both variant types)
+```bash
+./UniProtXML2PEFF.exe test.xml test.peff --no-ptms --variant-simple --variant-complex
+```
+
+#### Process PTMs and VariantSimple only
+```bash
+./UniProtXML2PEFF.exe test.xml test.peff --variant-simple
+```
+
+#### Strict mode with all features enabled
+```bash
+./UniProtXML2PEFF.exe test.xml test.peff --strict --variant-simple --variant-complex
 ```
 
 ---
@@ -121,7 +158,12 @@ Each `<feature>` element can include:
 ## Output Format
 
 ### PEFF Format Annotations
-The generated PEFF files include:
+The generated PEFF files include headers that indicate which features are enabled:
+- **`# VariantSimple=true|false`**: Indicates whether VariantSimple processing is enabled.
+- **`# VariantComplex=true|false`**: Indicates whether VariantComplex processing is enabled.
+- **`# ModResUnimod=true|false`**: Indicates whether PTM processing is enabled.
+
+The PEFF entries include the following annotations (when enabled):
 - **`VariantSimple`**: Encodes single residue substitutions.
   Example:
   ```
@@ -142,7 +184,18 @@ The generated PEFF files include:
   \ModResUnimod=(10|UNIMOD:21)(20|UNIMOD:1)
   ```
 
-### Example Output
+### Example Output (Default: PTMs only)
+```
+# PEFF 1.0
+# Database=UniProt
+# VariantSimple=false
+# VariantComplex=false
+# ModResUnimod=true
+>tr|TEST123| \ModResUnimod=(10|UNIMOD:21)
+AAAAAGGGGG
+```
+
+### Example Output (All features enabled)
 ```
 # PEFF 1.0
 # Database=UniProt

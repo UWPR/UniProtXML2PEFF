@@ -248,7 +248,7 @@ vector<string> parse_variants(XMLElement* entry)
       }
 
       int pos = posElem->IntAttribute("position");
-      variants.push_back("(" + to_string(pos) + "|" + alt + "|" + ref + ")");
+      variants.push_back("(" + to_string(pos) + "|" + ref + "|" + alt + ")");
    }
 
    return variants;
@@ -420,7 +420,7 @@ int main(int argc, char* argv[])
 
    peff << "# PEFF 1.0\n";
    peff << "# Database=UniProt\n";
-   peff << "# VariantSimple=" << (enable_variant_simple ? "true" : "false") << "\n";
+   peff << "# VariantSimple=" << (enable_variant_simple || enable_variant_complex ? "true" : "false") << "\n";
    peff << "# VariantComplex=" << (enable_variant_complex ? "true" : "false") << "\n";
    peff << "# ModResUnimod=" << (enable_ptms ? "true" : "false") << "\n";
 
@@ -469,6 +469,9 @@ int main(int argc, char* argv[])
       string entry_name = safe_string(entry->FirstChildElement("name") ? entry->FirstChildElement("name")->GetText() : "");
       string organism = safe_string(entry->FirstChildElement("organism") ? entry->FirstChildElement("organism")->GetText() : "");
 
+      // Clear OUTPUT_SIMPLE for this entry
+      OUTPUT_SIMPLE.clear();
+
       // Parse features based on enabled options
       vector<pair<int, string>> mods;
       vector<string> vars;
@@ -495,13 +498,25 @@ int main(int argc, char* argv[])
          peff << " OS=" << organism;
       }
 
-      // Write VariantSimple (Fix Here)
-      if (!OUTPUT_SIMPLE.empty())
+      // Write VariantSimple
+      // When VariantComplex is enabled, prefer OUTPUT_SIMPLE from parse_complex_variants (for compatibility)
+      // Otherwise, use vars from parse_variants if VariantSimple is enabled
+      vector<string> simple_output;
+      if (enable_variant_complex && !OUTPUT_SIMPLE.empty())
+      {
+         simple_output = OUTPUT_SIMPLE;
+      }
+      else if (enable_variant_simple)
+      {
+         simple_output = vars;
+      }
+      
+      if (!simple_output.empty())
       {
          peff << " \\VariantSimple=";
-         for (size_t i = 0; i < OUTPUT_SIMPLE.size(); ++i)
+         for (size_t i = 0; i < simple_output.size(); ++i)
          {
-            peff << OUTPUT_SIMPLE[i];
+            peff << simple_output[i];
          }
       }
 

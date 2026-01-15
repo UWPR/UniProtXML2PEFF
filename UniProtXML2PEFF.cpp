@@ -120,6 +120,12 @@ static string safe_string(const char* str)
    return str ? string(str) : string();
 }
 
+string safeText(XMLElement* element)
+{
+   return (element && element->GetText()) ? string(element->GetText()) : "";
+}
+
+
 /* ============================================================
    Parse modified residues
    ============================================================ */
@@ -459,7 +465,47 @@ int main(int argc, char* argv[])
       }
 
       string entry_name = safe_string(entry->FirstChildElement("name") ? entry->FirstChildElement("name")->GetText() : "");
-      string organism = safe_string(entry->FirstChildElement("organism") ? entry->FirstChildElement("organism")->GetText() : "");
+
+      string recommendedName;
+      XMLElement* protein = entry->FirstChildElement("protein");
+      if (protein)
+      {
+         XMLElement* recName = protein->FirstChildElement("recommendedName");
+         if (recName)
+         {
+            recommendedName = safeText(recName->FirstChildElement("fullName"));
+         }
+      }
+
+      string organism;
+      XMLElement* organismElement = entry->FirstChildElement("organism");
+      if (organismElement)
+      {
+         for (XMLElement* nameElem = organismElement->FirstChildElement("name"); nameElem; nameElem = nameElem->NextSiblingElement("name"))
+         {
+            const char* type = nameElem->Attribute("type");
+            if (type && string(type) == "scientific")
+            {
+               organism = safeText(nameElem);
+               break;
+            }
+         }
+      }
+
+      string geneName;
+      XMLElement* geneElement = entry->FirstChildElement("gene");
+      if (geneElement)
+      {
+         for (XMLElement* nameElem = geneElement->FirstChildElement("name"); nameElem; nameElem = nameElem->NextSiblingElement("name"))
+         {
+            const char* type = nameElem->Attribute("type");
+            if (type && string(type) == "primary")
+            {
+               geneName = safeText(nameElem);
+               break;
+            }
+         }
+      }
 
       // Clear OUTPUT_SIMPLE for this entry
       OUTPUT_SIMPLE.clear();
@@ -485,9 +531,17 @@ int main(int argc, char* argv[])
       }
 
       peff << ">" << db_type << "|" << acc << "|" << entry_name;
+      if (!recommendedName.empty())
+      {
+         peff << " " << recommendedName;
+      }
       if (!organism.empty())
       {
          peff << " OS=" << organism;
+      }
+      if (!geneName.empty())
+      {
+         peff << " GN=" << geneName;
       }
 
       // Write VariantSimple
